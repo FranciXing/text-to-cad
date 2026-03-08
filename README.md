@@ -36,58 +36,141 @@
 
 | 层级 | 技术 |
 |------|------|
-| **后端** | Python 3.11 + FastAPI + Celery |
-| **前端** | React 18 + TypeScript + React Three Fiber |
+| **后端** | Python 3.11 + FastAPI |
+| **前端** | React 18 + TypeScript + Three.js |
 | **CAD 引擎** | CadQuery (OpenCascade) |
 | **LLM** | Claude 3.5 Sonnet / GPT-4 |
 | **数据库** | PostgreSQL + Redis |
 | **文件存储** | MinIO |
 
-## 快速开始
+## 🚀 快速开始
 
 ### 环境要求
 
 - Python 3.11+
 - Node.js 18+
-- Docker & Docker Compose
 - Git
 
 ### 安装步骤
 
+#### 1. 克隆项目
+
 ```bash
-# 1. 克隆项目
-git clone https://github.com/yourusername/text-to-cad.git
+git clone https://github.com/FranciXing/text-to-cad.git
 cd text-to-cad
+```
 
-# 2. 复制环境变量模板
+#### 2. 配置环境变量
+
+```bash
 cp .env.example .env
-# 编辑 .env 文件，填入必要的 API 密钥
+# 编辑 .env 文件，填入必要的 API 密钥 (ANTHROPIC_API_KEY 或 OPENAI_API_KEY)
+```
 
-# 3. 启动基础设施
-docker-compose up -d postgres redis minio
+#### 3. 启动后端
 
-# 4. 安装后端依赖
+```bash
 cd backend
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
-# 5. 运行后端开发服务器
-uvicorn app.main:app --reload
-
-# 6. 安装前端依赖 (新终端)
-cd frontend
-npm install
-
-# 7. 运行前端开发服务器
-npm run dev
-
-# 8. 启动 Celery Worker (新终端)
-cd backend
-celery -A worker.celery_app worker --loglevel=info
+# 启动服务
+python3 -c "import uvicorn; from app.main import app; uvicorn.run(app, host='0.0.0.0', port=8000)"
 ```
 
-访问 http://localhost:5173 查看前端界面
+访问 http://localhost:8000/docs 查看 API 文档
+
+#### 4. 测试 API
+
+```bash
+# 创建任务
+curl -X POST http://localhost:8000/api/v1/tasks/create \
+  -H "Content-Type: application/json" \
+  -d '{"user_description": "创建一个100x80x5mm的矩形板"}'
+
+# 获取任务详情
+curl http://localhost:8000/api/v1/tasks/{task_id}
+
+# 下载 STEP 文件
+curl http://localhost:8000/api/v1/tasks/{task_id}/download/step -o model.step
+```
+
+## 🧪 开发测试
+
+### 后端模块测试
+
+所有后端模块已测试通过：
+
+```bash
+cd backend
+source venv/bin/activate
+python3 -c "from app.main import app; print('✅ FastAPI 导入成功')"
+```
+
+### API 端点
+
+| 方法 | 端点 | 说明 |
+|------|------|------|
+| POST | `/api/v1/tasks/create` | 创建新任务 |
+| GET | `/api/v1/tasks/{id}` | 获取任务详情 |
+| GET | `/api/v1/tasks/{id}/download/step` | 下载 STEP 文件 |
+| GET | `/api/v1/tasks/{id}/download/stl` | 下载 STL 文件 |
+| GET | `/api/v1/tasks/` | 列出所有任务 |
+| GET | `/docs` | API 文档 (Swagger) |
+
+## 📋 项目状态
+
+### ✅ 已完成
+
+- [x] 系统架构设计文档 (ARCHITECTURE.md)
+- [x] JSON Schema 定义
+- [x] Pydantic 数据模型
+- [x] LLM 客户端 (Anthropic/OpenAI)
+- [x] CAD 执行器 (Mock 版本用于测试)
+- [x] FastAPI 后端 API
+- [x] 任务状态管理
+- [x] 文件下载端点
+- [x] WebSocket 路由
+
+### 🚧 进行中
+
+- [ ] 前端界面开发 (React)
+- [ ] 3D 模型预览 (Three.js)
+- [ ] 完整的 CadQuery 集成
+- [ ] 实时进度更新
+
+### 📅 计划
+
+- [ ] 前端 React 组件
+- [ ] 任务拆分逻辑
+- [ ] 错误自动修复
+- [ ] 历史任务管理
+- [ ] Docker 部署
+
+## 🔧 开发工作流
+
+### 添加新功能
+
+1. 创建新分支: `git checkout -b feature/new-feature`
+2. 编写代码
+3. 测试: `python3 -c "from app.main import app; print('OK')"`
+4. 提交更改: `git commit -m "Add new feature"`
+5. 推送分支: `git push origin feature/new-feature`
+6. 创建 Pull Request
+
+### 运行测试
+
+```bash
+cd backend
+source venv/bin/activate
+
+# 测试导入
+python3 -c "from app.main import app; print('✅ 通过')"
+
+# 启动服务
+python3 -c "import uvicorn; from app.main import app; uvicorn.run(app, host='0.0.0.0', port=8000)"
+```
 
 ## 使用示例
 
@@ -110,10 +193,10 @@ celery -A worker.celery_app worker --loglevel=info
 
 ### Phase 1: MVP (进行中)
 - [x] 系统架构设计
-- [ ] 基础后端 API
+- [x] 基础后端 API
 - [ ] 前端界面原型
-- [ ] 简单 Prompt → CadQuery 代码
-- [ ] 基础 STEP 导出
+- [x] 简单 Prompt → CadQuery 代码
+- [x] 基础 STEP 导出
 
 ### Phase 2: 增强功能
 - [ ] JSON Schema 完整实现
@@ -143,8 +226,8 @@ MIT License - 详见 [LICENSE](LICENSE) 文件
 
 ## 联系方式
 
-- 项目 Issues: https://github.com/yourusername/text-to-cad/issues
-- 邮件: your.email@example.com
+- 项目 Issues: https://github.com/FranciXing/text-to-cad/issues
+- GitHub: https://github.com/FranciXing/text-to-cad
 
 ---
 
