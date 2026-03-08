@@ -1,0 +1,51 @@
+# Backend dependencies
+# FastAPI
+fastapi==0.109.2
+uvicorn[standard]==0.27.1
+
+# Database
+sqlalchemy==2.0.27
+asyncpg==0.29.0
+alembic==1.13.1
+
+# Redis
+redis==5.0.1
+
+# Celery
+celery==5.3.6
+
+# Pydantic (数据验证)
+pydantic==2.6.1
+pydantic-settings==2.1.0
+email-validator==2.1.0
+
+# CAD Libraries
+cadquery==2.4.0
+cq-editor==0.3.0
+
+# 3D Processing
+meshio==5.3.4
+numpy==1.26.3
+
+# LLM Integration
+anthropic==0.18.1
+openai==1.12.0
+
+# MinIO / S3
+minio==7.2.3
+
+# Utilities
+python-multipart==0.0.9
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+httpx==0.26.0
+aiofiles==23.2.1
+structlog==24.1.0
+
+# Development (optional)
+pytest==8.0.0
+pytest-asyncio==0.23.5
+black==24.1.1
+isort==5.13.2
+flake8==7.0.0
+mypy==1.8.0
