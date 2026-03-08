@@ -134,7 +134,8 @@ async def process_cad_task(task_id: str):
         task_store.update(task)
         
         # Get LLM client
-        llm_client = get_llm_client("anthropic")  # Default to Anthropic
+        provider = os.getenv("DEFAULT_LLM_PROVIDER", "openai")
+        llm_client = get_llm_client(provider)
         
         # Generate CAD plan
         task.status = TaskStatus.GENERATING
